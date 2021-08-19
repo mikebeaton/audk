@@ -80,7 +80,7 @@ EFIAPI
 Sm3HashUpdate (
   IN VOID           *HashHandle,
   IN CONST VOID     *DataToHash,
-  IN UINTN        DataToHashLen
+  IN UINTN          DataToHashLen
   )
 {
   Sm3Update (HashHandle, DataToHash, DataToHashLen);
@@ -100,10 +100,10 @@ BOOLEAN
 EFIAPI
 Sm3HashFinal (
   IN VOID                *HashHandle,
-  OUT TPML_DIGEST_VALUES  *DigestList
+  OUT TPML_DIGEST_VALUES *DigestList
   )
 {
-  UINT8  Digest[SM3_256_DIGEST_SIZE];
+  UINT8         Digest[SM3_256_DIGEST_SIZE];
 
   Sm3Final (HashHandle, Digest);
 

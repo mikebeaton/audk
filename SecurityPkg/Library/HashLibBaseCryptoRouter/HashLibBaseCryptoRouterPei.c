@@ -129,24 +129,24 @@ CheckSupportedHashMaskMismatch (
   @retval EFI_SUCCESS          Hash sequence start and HandleHandle returned.
   @retval EFI_OUT_OF_RESOURCES No enough resource to start hash.
 **/
-EFI_STATUS
+BOOLEAN
 EFIAPI
 HashStart (
-  OUT HASH_HANDLE  *HashHandle
+  OUT VOID           **HashHandle
   )
 {
-  HASH_INTERFACE_HOB  *HashInterfaceHob;
-  HASH_HANDLE         *HashCtx;
-  UINTN               Index;
-  UINT32              HashMask;
+  HASH_INTERFACE_HOB *HashInterfaceHob;
+  VOID               **HashCtx;
+  UINTN              Index;
+  UINT32             HashMask;
 
   HashInterfaceHob = InternalGetHashInterfaceHob (&gEfiCallerIdGuid);
   if (HashInterfaceHob == NULL) {
-    return EFI_UNSUPPORTED;
+    return FALSE;
   }
 
   if (HashInterfaceHob->HashInterfaceCount == 0) {
-    return EFI_UNSUPPORTED;
+    return FALSE;
   }
 
   CheckSupportedHashMaskMismatch (HashInterfaceHob);
@@ -161,9 +161,9 @@ HashStart (
     }
   }
 
-  *HashHandle = (HASH_HANDLE)HashCtx;
+  *HashHandle = HashCtx;
 
-  return EFI_SUCCESS;
+  return TRUE;
 }
 
 /**
@@ -175,31 +175,31 @@ HashStart (
 
   @retval EFI_SUCCESS     Hash sequence updated.
 **/
-EFI_STATUS
+BOOLEAN
 EFIAPI
 HashUpdate (
-  IN HASH_HANDLE  HashHandle,
-  IN VOID         *DataToHash,
-  IN UINTN        DataToHashLen
+  IN VOID           *HashHandle,
+  IN CONST VOID     *DataToHash,
+  IN UINTN          DataToHashLen
   )
 {
-  HASH_INTERFACE_HOB  *HashInterfaceHob;
-  HASH_HANDLE         *HashCtx;
-  UINTN               Index;
-  UINT32              HashMask;
+  HASH_INTERFACE_HOB *HashInterfaceHob;
+  VOID               **HashCtx;
+  UINTN              Index;
+  UINT32             HashMask;
 
   HashInterfaceHob = InternalGetHashInterfaceHob (&gEfiCallerIdGuid);
   if (HashInterfaceHob == NULL) {
-    return EFI_UNSUPPORTED;
+    return FALSE;
   }
 
   if (HashInterfaceHob->HashInterfaceCount == 0) {
-    return EFI_UNSUPPORTED;
+    return FALSE;
   }
 
   CheckSupportedHashMaskMismatch (HashInterfaceHob);
 
-  HashCtx = (HASH_HANDLE *)HashHandle;
+  HashCtx = (VOID **)HashHandle;
 
   for (Index = 0; Index < HashInterfaceHob->HashInterfaceCount; Index++) {
     HashMask = Tpm2GetHashMaskFromAlgo (&HashInterfaceHob->HashInterface[Index].HashGuid);
@@ -208,7 +208,7 @@ HashUpdate (
     }
   }
 
-  return EFI_SUCCESS;
+  return TRUE;
 }
 
 /**
@@ -225,19 +225,19 @@ HashUpdate (
 EFI_STATUS
 EFIAPI
 HashCompleteAndExtend (
-  IN HASH_HANDLE          HashHandle,
-  IN TPMI_DH_PCR          PcrIndex,
-  IN VOID                 *DataToHash,
-  IN UINTN                DataToHashLen,
-  OUT TPML_DIGEST_VALUES  *DigestList
+  IN VOID                *HashHandle,
+  IN TPMI_DH_PCR         PcrIndex,
+  IN VOID                *DataToHash,
+  IN UINTN               DataToHashLen,
+  OUT TPML_DIGEST_VALUES *DigestList
   )
 {
-  TPML_DIGEST_VALUES  Digest;
-  HASH_INTERFACE_HOB  *HashInterfaceHob;
-  HASH_HANDLE         *HashCtx;
-  UINTN               Index;
-  EFI_STATUS          Status;
-  UINT32              HashMask;
+  TPML_DIGEST_VALUES Digest;
+  HASH_INTERFACE_HOB *HashInterfaceHob;
+  VOID               **HashCtx;
+  UINTN              Index;
+  EFI_STATUS         Status;
+  UINT32             HashMask;
 
   HashInterfaceHob = InternalGetHashInterfaceHob (&gEfiCallerIdGuid);
   if (HashInterfaceHob == NULL) {
@@ -250,8 +250,8 @@ HashCompleteAndExtend (
 
   CheckSupportedHashMaskMismatch (HashInterfaceHob);
 
-  HashCtx = (HASH_HANDLE *)HashHandle;
-  ZeroMem (DigestList, sizeof (*DigestList));
+  HashCtx = (VOID **)HashHandle;
+  ZeroMem (DigestList, sizeof(*DigestList));
 
   for (Index = 0; Index < HashInterfaceHob->HashInterfaceCount; Index++) {
     HashMask = Tpm2GetHashMaskFromAlgo (&HashInterfaceHob->HashInterface[Index].HashGuid);
@@ -290,9 +290,9 @@ HashAndExtend (
   OUT TPML_DIGEST_VALUES  *DigestList
   )
 {
-  HASH_INTERFACE_HOB  *HashInterfaceHob;
-  HASH_HANDLE         HashHandle;
-  EFI_STATUS          Status;
+  HASH_INTERFACE_HOB *HashInterfaceHob;
+  VOID               *HashHandle;
+  EFI_STATUS         Status;
 
   HashInterfaceHob = InternalGetHashInterfaceHob (&gEfiCallerIdGuid);
   if (HashInterfaceHob == NULL) {

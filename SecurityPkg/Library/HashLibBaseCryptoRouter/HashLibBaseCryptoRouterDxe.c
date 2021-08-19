@@ -62,7 +62,7 @@ CheckSupportedHashMaskMismatch (
 BOOLEAN
 EFIAPI
 HashStart (
-  OUT VOID  **HashHandle
+  OUT VOID           **HashHandle
   )
 {
   VOID         **HashCtx;
@@ -102,9 +102,9 @@ HashStart (
 BOOLEAN
 EFIAPI
 HashUpdate (
-  IN VOID        *HashHandle,
-  IN CONST VOID  *DataToHash,
-  IN UINTN       DataToHashLen
+  IN VOID           *HashHandle,
+  IN CONST VOID     *DataToHash,
+  IN UINTN          DataToHashLen
   )
 {
   VOID         **HashCtx;
@@ -211,7 +211,7 @@ HashCompleteAndExtend (
   CheckSupportedHashMaskMismatch ();
 
   HashCtx = (VOID **)HashHandle;
-  ZeroMem (DigestList, sizeof (*DigestList));
+  ZeroMem (DigestList, sizeof(*DigestList));
 
   for (Index = 0; Index < mHashInterfaceCount; Index++) {
     HashMask = Tpm2GetHashMaskFromAlgo (&mHashInterface[Index].HashGuid);
@@ -269,8 +269,8 @@ HashAndExtend (
   OUT TPML_DIGEST_VALUES  *DigestList
   )
 {
-  VOID        *HashHandle;
-  EFI_STATUS  Status;
+  VOID           *HashHandle;
+  EFI_STATUS     Status;
 
   if (mHashInterfaceCount == 0) {
     return EFI_UNSUPPORTED;

@@ -94,7 +94,7 @@ EFIAPI
 HashUpdate (
   IN VOID           *HashHandle,
   IN CONST VOID     *DataToHash,
-  IN UINTN        DataToHashLen
+  IN UINTN          DataToHashLen
   )
 {
   UINT8             *Buffer;
@@ -118,9 +118,9 @@ HashUpdate (
   // Last one
   //
   HashBuffer.size = (UINT16)HashLen;
-  CopyMem (HashBuffer.buffer, Buffer, (UINTN)HashLen);
-  Status = Tpm2SequenceUpdate ((TPMI_DH_OBJECT)(UINTN)HashHandle, &HashBuffer);
-  if (EFI_ERROR (Status)) {
+  CopyMem(HashBuffer.buffer, Buffer, (UINTN)HashLen);
+  Status = Tpm2SequenceUpdate((TPMI_DH_OBJECT)(UINTN)HashHandle, &HashBuffer);
+  if (EFI_ERROR(Status)) {
     return FALSE;
   }
 
@@ -142,10 +142,10 @@ EFI_STATUS
 EFIAPI
 HashCompleteAndExtend (
   IN VOID                *HashHandle,
-  IN TPMI_DH_PCR          PcrIndex,
-  IN VOID                 *DataToHash,
-  IN UINTN                DataToHashLen,
-  OUT TPML_DIGEST_VALUES  *DigestList
+  IN TPMI_DH_PCR         PcrIndex,
+  IN VOID                *DataToHash,
+  IN UINTN               DataToHashLen,
+  OUT TPML_DIGEST_VALUES *DigestList
   )
 {
   UINT8             *Buffer;

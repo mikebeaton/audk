@@ -79,7 +79,7 @@ EFIAPI
 Sha256HashUpdate (
   IN VOID           *HashHandle,
   IN CONST VOID     *DataToHash,
-  IN UINTN        DataToHashLen
+  IN UINTN          DataToHashLen
   )
 {
   Sha256Update (HashHandle, DataToHash, DataToHashLen);
@@ -99,10 +99,10 @@ BOOLEAN
 EFIAPI
 Sha256HashFinal (
   IN VOID                *HashHandle,
-  OUT TPML_DIGEST_VALUES  *DigestList
+  OUT TPML_DIGEST_VALUES *DigestList
   )
 {
-  UINT8  Digest[SHA256_DIGEST_SIZE];
+  UINT8         Digest[SHA256_DIGEST_SIZE];
 
   Sha256Final (HashHandle, Digest);
 

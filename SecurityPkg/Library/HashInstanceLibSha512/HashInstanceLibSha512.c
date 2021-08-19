@@ -78,7 +78,7 @@ EFIAPI
 Sha512HashUpdate (
   IN VOID           *HashHandle,
   IN CONST VOID     *DataToHash,
-  IN UINTN        DataToHashLen
+  IN UINTN          DataToHashLen
   )
 {
   Sha512Update (HashHandle, DataToHash, DataToHashLen);
@@ -98,7 +98,7 @@ BOOLEAN
 EFIAPI
 Sha512HashFinal (
   IN VOID                *HashHandle,
-  OUT TPML_DIGEST_VALUES  *DigestList
+  OUT TPML_DIGEST_VALUES *DigestList
   )
 {
   UINT8  Digest[SHA512_DIGEST_SIZE];

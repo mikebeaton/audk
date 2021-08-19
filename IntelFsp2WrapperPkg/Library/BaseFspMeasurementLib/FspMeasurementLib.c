@@ -106,17 +106,17 @@ MeasureFspFirmwareBlobWithCfg (
   IN UINT32                CfgRegionSize
   )
 {
-  EFI_PLATFORM_FIRMWARE_BLOB      FvBlob, UpdBlob;
-  PLATFORM_FIRMWARE_BLOB2_STRUCT  FvBlob2, UpdBlob2;
-  VOID                            *FvName;
-  UINT32                          FvEventType;
-  VOID                            *FvEventLog, *UpdEventLog;
-  UINT32                          FvEventLogSize, UpdEventLogSize;
-  EFI_STATUS                      Status;
-  HASH_HANDLE                     HashHandle;
-  UINT8                           *HashBase;
-  UINTN                           HashSize;
-  TPML_DIGEST_VALUES              DigestList;
+  EFI_PLATFORM_FIRMWARE_BLOB        FvBlob, UpdBlob;
+  PLATFORM_FIRMWARE_BLOB2_STRUCT    FvBlob2, UpdBlob2;
+  VOID                              *FvName;
+  UINT32                            FvEventType;
+  VOID                              *FvEventLog, *UpdEventLog;
+  UINT32                            FvEventLogSize, UpdEventLogSize;
+  EFI_STATUS                        Status;
+  VOID                              *HashHandle;
+  UINT8                             *HashBase;
+  UINTN                             HashSize;
+  TPML_DIGEST_VALUES                DigestList;
 
   FvName = TpmMeasurementGetFvName (FirmwareBlobBase, FirmwareBlobLength);
 

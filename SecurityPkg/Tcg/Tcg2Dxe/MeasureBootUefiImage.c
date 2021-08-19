@@ -50,6 +50,7 @@ MeasureUefiImageAndExtend (
   )
 {
   EFI_STATUS                           Status;
+  EFI_IMAGE_SECTION_HEADER             *SectionHeader;
   VOID                                 *HashHandle;
   UEFI_IMAGE_LOADER_IMAGE_CONTEXT      ImageContext;
 
@@ -85,7 +86,7 @@ MeasureUefiImageAndExtend (
   }
 
   // FIXME: This is just an ugly wrapper, the types should match (UINTN <-> VOID *), fix the libs
-  UefiImageHashImageDefault (&ImageContext, HashHandle, HashUpdate);
+  UefiImageHashImageDefault (NULL, HashHandle, HashUpdate);
   if (EFI_ERROR (Status)) {
     return Status;
   }
