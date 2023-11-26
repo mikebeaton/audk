@@ -148,6 +148,43 @@ CoreUpdateDebugTableCrc32 (
   gBS->CalculateCrc32 ((VOID *)mDebugTable, sizeof (EFI_SYSTEM_TABLE_POINTER), &mDebugTable->Crc32);
 }
 
+STATIC
+VOID
+InternalShowSections (
+  IN  EFI_LOADED_IMAGE_PROTOCOL  *LoadedImage
+  )
+{
+  EFI_IMAGE_DOS_HEADER *DosHeader;
+  EFI_IMAGE_OPTIONAL_HEADER_UNION *OptionalHeaderUnion;
+  EFI_IMAGE_FILE_HEADER *FileHeader;
+  EFI_IMAGE_SECTION_HEADER *SectionHeaders;
+  UINTN Index;
+  CHAR8 Name[EFI_IMAGE_SIZEOF_SHORT_NAME + 1];
+
+  DEBUG ((DEBUG_WARN, "Base %p\n", LoadedImage->ImageBase));
+  DosHeader = LoadedImage->ImageBase;
+
+  if (DosHeader->e_magic == EFI_IMAGE_DOS_SIGNATURE) {
+    OptionalHeaderUnion = (VOID *)(((UINT8 *)DosHeader) + DosHeader->e_lfanew);
+  } else {
+    OptionalHeaderUnion = (VOID *)DosHeader;
+  }
+  if ( OptionalHeaderUnion->Pe32Plus.Signature == EFI_IMAGE_NT_SIGNATURE
+    && OptionalHeaderUnion->Pe32Plus.OptionalHeader.Magic == EFI_IMAGE_NT_OPTIONAL_HDR64_MAGIC)
+  {
+    FileHeader = &OptionalHeaderUnion->Pe32Plus.FileHeader;
+    SectionHeaders = ((VOID *)OptionalHeaderUnion) +
+                      sizeof(OptionalHeaderUnion->Pe32Plus.Signature) +
+                      sizeof(OptionalHeaderUnion->Pe32Plus.FileHeader) +
+                      FileHeader->SizeOfOptionalHeader;
+    Name[EFI_IMAGE_SIZEOF_SHORT_NAME] = '\0';
+    for (Index = 0; Index < FileHeader->NumberOfSections; Index++) {
+      CopyMem (Name, SectionHeaders[Index].Name, EFI_IMAGE_SIZEOF_SHORT_NAME);
+      DEBUG ((DEBUG_WARN, "\"%a\"\n", Name));
+    }
+  }
+}
+
 /**
   Adds a new DebugImageInfo structure to the DebugImageInfo Table.  Re-Allocates
   the table if it's not large enough to accomidate another entry.
@@ -169,6 +206,8 @@ CoreNewDebugImageInfoEntry (
   EFI_DEBUG_IMAGE_INFO  *NewTable;
   UINTN                 Index;
   UINTN                 TableSize;
+
+  InternalShowSections (LoadedImage); /////////////////
 
   //
   // Set the flag indicating that we're in the process of updating the table.
