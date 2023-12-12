@@ -435,11 +435,9 @@ UnitTestDebugAssert (
     } while (FALSE)
 #elif defined (__GNUC__) || defined (__clang__)
 #define DEBUG(Expression)        \
-    do {                           \
-      if ((FALSE)) {               \
-        _DEBUG (Expression);       \
-      }                            \
-    } while (FALSE)
+    if ((FALSE)) {                 \
+      _DEBUG (Expression);         \
+    }
 #else
 #define DEBUG(Expression)
 #endif
