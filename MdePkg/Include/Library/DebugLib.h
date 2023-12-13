@@ -435,7 +435,7 @@ UnitTestDebugAssert (
     } while (FALSE)
 #else
 #define DEBUG(Expression)        \
-    if ((FALSE)) {                 \
+    if (FALSE) {                   \
       _DEBUG (Expression);         \
     }
 #endif
