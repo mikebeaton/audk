@@ -34,7 +34,9 @@ WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
 //
 // Force member alignment for the structure.
 //
-#if (defined (__STDC__) && __STDC_VERSION__ >= 201112L) || defined (__GNUC__) || defined (__clang__)
+#if defined (_MSC_EXTENSIONS)
+#define BASE_ALIGNAS(Alignment)  __declspec(align(Alignment))
+#elif (defined (__STDC__) && __STDC_VERSION__ >= 201112L) || defined (__GNUC__) || defined (__clang__)
 #define BASE_ALIGNAS(Alignment)  _Alignas(Alignment)
 #else
 #define BASE_ALIGNAS(Alignment)
