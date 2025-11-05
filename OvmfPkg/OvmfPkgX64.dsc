@@ -628,9 +628,9 @@
   !endif
 
   #
-  # Firmware volume supports UE, and may require PE.
+  # Firmware volume supports only PE.
   #
-  gEfiMdePkgTokenSpaceGuid.PcdUefiImageFormatSupportFv|0x03
+  gEfiMdePkgTokenSpaceGuid.PcdUefiImageFormatSupportFv|0x01
 
 ################################################################################
 #
