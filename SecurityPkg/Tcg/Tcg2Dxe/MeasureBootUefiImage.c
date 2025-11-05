@@ -86,8 +86,26 @@ MeasureUefiImageAndExtend (
   EFI_STATUS                       Status;
   HASH_HANDLE                      HashHandle;
   UEFI_IMAGE_LOADER_IMAGE_CONTEXT  ImageContext;
+  UEFI_IMAGE_LOADER_IMAGE_CONTEXT  *IncomingImageContext;
+  CONST VOID                       *FileBuffer;
+  UINT32                           FileSize;
 
-  Status = EFI_UNSUPPORTED;
+  if (ImageSize != sizeof (UEFI_IMAGE_LOADER_IMAGE_CONTEXT)) {
+    ASSERT (FALSE);
+    return EFI_UNSUPPORTED;
+  }
+
+  IncomingImageContext = (UEFI_IMAGE_LOADER_IMAGE_CONTEXT *) ImageAddress;
+  if (IncomingImageContext->FormatIndex == UefiImageFormatPe) {
+    FileBuffer = IncomingImageContext->Ctx.Pe.FileBuffer;
+    FileSize   = IncomingImageContext->Ctx.Pe.FileSize;
+  } else if (IncomingImageContext->FormatIndex == UefiImageFormatUe) {
+    FileBuffer = IncomingImageContext->Ctx.Ue.FileBuffer;
+    FileSize   = IncomingImageContext->Ctx.Ue.UnsignedFileSize;
+  } else {
+    ASSERT (FALSE);
+    return EFI_UNSUPPORTED;
+  }
 
   // FIXME: Can this somehow be abstracted away?
   //
@@ -95,8 +113,8 @@ MeasureUefiImageAndExtend (
   //
   Status = UefiImageInitializeContextPreHash (
              &ImageContext,
-             (VOID *) (UINTN) ImageAddress,
-             (UINT32) ImageSize,
+             FileBuffer,
+             FileSize,
              UEFI_IMAGE_SOURCE_ALL,
              UefiImageOriginFv
              );

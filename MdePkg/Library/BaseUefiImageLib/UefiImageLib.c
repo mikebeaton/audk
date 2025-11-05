@@ -77,8 +77,8 @@ STATIC_ASSERT (
 
 #define FORMAT_SUPPORTED(Format, Source)                                                                     \
   ((UEFI_IMAGE_FORMAT_SUPPORT & (1U << (Format))) != 0 &&                                                    \
-   (((Source) == UEFI_IMAGE_SOURCE_NON_FV && (UEFI_IMAGE_FORMAT_SUPPORT_NON_FV & (1U << (Format))) != 0) ||  \
-    ((Source) == UEFI_IMAGE_SOURCE_FV && (UEFI_IMAGE_FORMAT_SUPPORT_FV & (1U << (Format))) != 0)))
+   ((((Source) == UEFI_IMAGE_SOURCE_NON_FV || (Source) == UEFI_IMAGE_SOURCE_ALL) && (UEFI_IMAGE_FORMAT_SUPPORT_NON_FV & (1U << (Format))) != 0) ||  \
+    (((Source) == UEFI_IMAGE_SOURCE_FV     || (Source) == UEFI_IMAGE_SOURCE_ALL) && (UEFI_IMAGE_FORMAT_SUPPORT_FV     & (1U << (Format))) != 0)))
 
 STATIC_ASSERT (
   UEFI_IMAGE_SOURCE_MAX == 3,

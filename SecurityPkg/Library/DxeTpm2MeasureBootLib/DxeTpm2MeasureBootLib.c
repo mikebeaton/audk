@@ -45,6 +45,41 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 
 #include "DxeTpm2MeasureBootLibSanitization.h"
 
+VOID
+#if defined (__GNUC__) || defined (__clang__)
+__attribute__ ((noinline))
+#endif
+DebugBreak (
+  VOID
+  ) {
+  //
+  // This function has no code, debuggers may break on it.
+  //
+}
+
+STATIC BOOLEAN mProceed = FALSE;
+
+VOID
+#if defined (__GNUC__) || defined (__clang__)
+__attribute__ ((noinline))
+#endif
+WaitForKeyPress (
+  VOID
+  )
+{
+  volatile BOOLEAN  Proceed;
+
+  //
+  // Wait for debugger signal or key press.
+  //
+  Proceed = mProceed;
+  while (!Proceed) {
+    DebugBreak ();
+  }
+
+  mProceed = TRUE;
+}
+
 typedef struct {
   EFI_TCG2_PROTOCOL              *Tcg2Protocol;
   EFI_CC_MEASUREMENT_PROTOCOL    *CcProtocol;
@@ -618,6 +653,8 @@ DxeTpm2MeasureBootHandler (
      MeasureBootProtocols.CcProtocol
     )
     );
+
+  WaitForKeyPress();
 
   //
   // Copy File Device Path
