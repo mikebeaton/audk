@@ -821,6 +821,7 @@ vfrExtensionData[UINT8 *DataBuff, UINT32 Size, CHAR8 *TypeName, UINT32 TypeSize,
      UINT16   FieldOffset;
      UINT8    FieldType;
      UINT32   FieldSize;
+     UINT16   TotalFieldBits;
      UINT64   Data_U64 = 0;
      UINT32   Data_U32 = 0;
      UINT16   Data_U16 = 0;
@@ -892,9 +893,10 @@ vfrExtensionData[UINT8 *DataBuff, UINT32 Size, CHAR8 *TypeName, UINT32 TypeSize,
             } else {
               gCVfrVarDataTypeDB.GetDataFieldInfo(TFName, FieldOffset, FieldType, FieldSize, BitField);
               if (BitField) {
+                TotalFieldBits = (1 << (FieldType + 3)); ///< Relies on field types for 8,16,32,64 bits having values 0,1,2,3
                 Mask = (1 << FieldSize) - 1;
-                Offset = FieldOffset / 8;
-                PreBits = FieldOffset % 8;
+                Offset = ((FieldOffset / TotalFieldBits) * TotalFieldBits) / 8;
+                PreBits = FieldOffset % TotalFieldBits;
                 Mask <<= PreBits;
               }
               switch (FieldType) {
@@ -902,7 +904,7 @@ vfrExtensionData[UINT8 *DataBuff, UINT32 Size, CHAR8 *TypeName, UINT32 TypeSize,
                  Data_U8 = _STOU8(RD->getText(), RD->getLine());
                  if (BitField) {
                    //
-                   // Set the value to the bit fileds.
+                   // Set the value to the bit fields.
                    //
                    Value = *(UINT8*) (ByteOffset + Offset);
                    Data_U8 <<= PreBits;
